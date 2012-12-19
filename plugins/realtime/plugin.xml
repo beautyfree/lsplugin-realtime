@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+    <name>
+        <lang name="default">Realtime</lang>
+    </name>
+    <author>
+        <lang name="default">Alexei Yelizarov</lang>
+        <lang name="russian">Алексей Елизаров</lang>
+    </author>
+    <homepage>http://devall.ru</homepage>
+    <settings></settings>
+    <version>0.0.3</version>
+    <requires>
+        <livestreet>0.5.1</livestreet>
+        <plugins>
+        </plugins>
+    </requires>
+    <description>
+        <lang name="default"></lang>
+        <lang name="russian"></lang>
+    </description>
+</plugin>

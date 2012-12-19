@@ -1,0 +1,191 @@
+#!/bin/sh
+clear
+
+stty erase '^?'
+
+if [ $USER != 'root' ]; then
+    echo "We need root permissions. Use sudo INSTALL"
+    exit 0
+fi
+
+echo "
+                                  _|    _|      _|
+    _|  _|_|    _|_|      _|_|_|  _|  _|_|_|_|      _|_|_|  _|_|      _|_|
+    _|_|      _|_|_|_|  _|    _|  _|    _|      _|  _|    _|    _|  _|_|_|_|
+    _|        _|        _|    _|  _|    _|      _|  _|    _|    _|  _|
+    _|          _|_|_|    _|_|_|  _|      _|_|  _|  _|    _|    _|    _|_|_|
+
+    by beauty_free
+
+    This is installer of Realtime node.js server and him components.
+
+    For contact use skype: felex-ae or email: felex-ae@ya.ru
+    And send me pm: http://livestreet.ru/profile/beauty_free/
+"
+
+
+
+ABSOLUTE_FILENAME=`readlink -e "$0"`
+DIRECTORY=`dirname "$ABSOLUTE_FILENAME"`
+
+INSTALL_NODE() {
+    echo
+    echo "################################################################"
+    echo "# Go to http://nodejs.org/#download and copy link Source code."
+    echo "################################################################"
+    echo -n "Put it here (like http://nodejs.org/dist/v0.6.8/node-v0.6.8.tar.gz):"
+
+    read nodelink
+
+    echo
+    echo "# --------------------------------------"
+    echo "# Downloading Node.js..."
+    echo "# --------------------------------------"
+    echo
+    wget $nodelink
+
+    echo
+    echo "# --------------------------------------"
+    echo "# Unzipping Node.js..."
+    echo "# --------------------------------------"
+    echo
+    tar xvzf node-v*.tar.gz
+
+    echo
+    echo "# --------------------------------------"
+    echo "# Compiling Node.js..."
+    echo "# --------------------------------------"
+    echo
+    cd node-v*/
+    ./configure
+    make
+    make install
+
+    echo
+    echo "Node.js installed!"
+
+    echo
+    echo "# --------------------------------------"
+    echo "# Cleaning up files..."
+    echo "# --------------------------------------"
+    rm node-v*.tar.gz
+    rm -rf node-v*
+}
+
+INSTALL_NPM() {
+    echo
+    echo "# --------------------------------------"
+    echo "# Install NPM"
+    echo "# --------------------------------------"
+    echo
+    curl http://npmjs.org/install.sh | sh
+    echo "NPM installed!"
+
+    echo
+    echo "# --------------------------------------"
+    echo "# Install Winston"
+    echo "# --------------------------------------"
+    echo
+    npm install winston
+    echo "Winston installed!"
+}
+
+# If found node.js
+if which node > /dev/null 2>&1; then
+    NODE_VERSION=`node --version 2>&1`
+
+    echo
+    echo "# We found installed Node.js $NODE_VERSION"
+    echo "# You can install new version if it out"
+
+    echo
+    echo -n "Install other version or you want to use $NODE_VERSION?(y/n):"
+
+    read installnode
+
+    if [ $installnode = 'y' ]; then
+        INSTALL_NODE
+    fi
+else
+    INSTALL_NODE
+fi
+
+if which npm > /dev/null 2>&1; then
+    NPM_VERSION=`npm --version 2>&1`
+
+    echo
+    echo "# We found installed npm v$NPM_VERSION"
+    echo "# You can install new version if it out"
+
+    echo
+    echo -n "Try to install other version or you want to use v$NPM_VERSION?(y/n):"
+
+    read installnpm
+
+    if [ $installnpm = 'y' ]; then
+        INSTALL_NPM
+    fi
+else
+    INSTALL_NPM
+fi
+
+echo
+echo "# --------------------------------------"
+echo "# Make init.d and autostart of server.js"
+echo "# --------------------------------------"
+echo
+
+rm /etc/init.d/nodejs_app
+chmod +x $DIRECTORY/nodejs_app
+# if [ ! -e "/etc/init.d/nodejs_app" ]; then
+    ln -s $DIRECTORY/nodejs_app /etc/init.d/nodejs_app
+# else
+#    echo "-/etc/init.d/nodejs_app already exists"
+# fi
+
+CREATE_LINK=`update-rc.d nodejs_app defaults 2>&1 | grep -v 'already exist'`
+
+if [ "$CREATE_LINK" = "" ]; then
+    echo "-update-rc.d nodejs_app defaults already exist"
+fi
+
+echo "Init.d and autostart installed!"
+
+# echo
+# echo "################################################################"
+# echo "# Please enter path to LiveStreet"
+# echo "################################################################"
+# echo -n "Put it here (like /var/www/livestreet):"
+# read config
+# echo
+
+# chmod 777 $config/plugins/realtime/config/config.php
+
+# ------------------------------------------------------------------------------
+# Создание файла для логов
+# ------------------------------------------------------------------------------
+# Создаем папку
+# mkdir /var/log/node
+# Создаем файл
+# touch /var/log/node/app.log
+# Выдаем всем права на запись
+# chmod 777 /var/log/node/app.log
+
+echo
+echo "****************************************************************"
+echo "****************************************************************"
+echo "*******                                                  *******"
+echo "******* Congratulations! Realtime server installed  *******"
+echo "*******                                                  *******"
+echo "****************************************************************"
+echo "****************************************************************"
+echo "# You MUST edit livestreet path in config.js and settings"
+echo "# Realtime config.php"
+echo "****************************************************************"
+
+
+exit 0
+
+
+
+
