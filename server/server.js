@@ -58,6 +58,7 @@ setInterval(function () {
 
 var user = sio.listen(config.io_port);
 user.configure(function () {
+  user.set('origins', '*' );
   user.set('transports', config.io_transports );
   user.set('log level', config.io_log_level);
 });
