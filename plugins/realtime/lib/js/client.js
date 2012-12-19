@@ -18,7 +18,7 @@ jQuery(function($) {
     if(typeof(USER_ID) !== "undefined") {
         socket = io.connect(SOCKET_IO_URL, {
             'port' : SOCKET_IO_PORT,
-	    'origins': '*:*',
+            'origins': '*:*',
             'reconnect': true,
             'reconnection delay': 500,
             'max reconnection attemps': 10
